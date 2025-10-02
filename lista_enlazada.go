@@ -29,3 +29,105 @@ func crearNodo[T any](nuevo_nodo T) *nodoLista[T] {
 	return nuevoNodo
 }
 
+// berni, agrega tus primitivas aca arriba, que las tuyas van primero 
+func (lista *listaEnlazada[T]) VerUltimo() T {
+	if lista.EstaVacia() {
+		panic("La lista esta vacia")
+	}
+	return lista.ultimo.dato
+}
+
+func (lista *listaEnlazada[T]) Largo() int {
+	return lista.largo
+}
+
+
+func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
+	if lista.EstaVacia() {
+		return
+	}
+
+	actual := lista.primero
+
+	for actual != nil {
+		if !visitar(actual.dato) {
+			return
+		}
+		actual = actual.siguiente
+	}
+}
+
+
+func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
+	return &iteradorListaEnlazada[T]{
+		actual:   lista.primero,
+		anterior: nil,
+		lista:    lista,
+	}
+}
+
+
+func (iterador *iteradorListaEnlazada[T]) HaySiguiente() bool {
+	return iterador.actual != nil
+}
+
+
+func (iterador *iteradorListaEnlazada[T]) VerActual() T {
+	if !iterador.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	return iterador.actual.dato
+}
+
+
+func (iterador *iteradorListaEnlazada[T]) Siguiente() {
+	if !iterador.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+
+	iterador.anterior = iterador.actual
+	iterador.actual = iterador.actual.siguiente
+}
+
+
+func (iterador *iteradorListaEnlazada[T]) Insertar(dato T) {
+	nuevoNodo := crearNodo(dato)
+
+	if iterador.anterior == nil {
+		iterador.lista.InsertarPrimero(dato)
+		iterador.actual = iterador.lista.primero
+	} else {
+		nuevoNodo.siguiente = iterador.actual
+		iterador.anterior.siguiente = nuevoNodo
+		if iterador.actual == nil {
+			iterador.lista.ultimo = nuevoNodo
+		}
+		iterador.lista.largo++
+		iterador.actual = nuevoNodo
+	}
+}
+
+
+func (iterador *iteradorListaEnlazada[T]) Borrar() T {
+	if !iterador.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+
+	dato := iterador.actual.dato
+
+	if iterador.anterior == nil {
+		iterador.lista.BorrarPrimero()
+	} else {
+		iterador.anterior.siguiente = iterador.actual.siguiente
+		if iterador.actual == iterador.lista.ultimo {
+			iterador.lista.ultimo = iterador.anterior
+		}
+		iterador.lista.largo--
+	}
+
+	iterador.actual = iterador.actual.siguiente
+
+	return dato
+}
+
+
