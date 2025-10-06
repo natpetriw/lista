@@ -17,7 +17,7 @@ type iteradorListaEnlazada[T any] struct {
 }
 
 
-func CrearListaEnlazada[T any]() Lista[T] {
+func CrearListaEnlazada[T any]() *listaEnlazada[T] {
 	return new(listaEnlazada[T])
 }
 
@@ -29,7 +29,59 @@ func crearNodo[T any](nuevo_nodo T) *nodoLista[T] {
 	return nuevoNodo
 }
 
-// berni, agrega tus primitivas aca arriba, que las tuyas van primero 
+func (lista *listaEnlazada[T]) EstaVacia() bool{
+	return lista.primero == nil
+}
+
+func (lista *listaEnlazada[T]) InsertarPrimero(dato T){
+	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: lista.primero}
+	lista.primero = nuevoNodo
+
+	if lista.ultimo == nil {
+		lista.ultimo = nuevoNodo
+	}
+
+	lista.largo++
+}
+
+func (lista *listaEnlazada[T]) InsertarUltimo(dato T){
+	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: nil}
+
+	if lista.ultimo != nil{
+		lista.ultimo.siguiente = nuevoNodo
+	}
+	lista.ultimo = nuevoNodo
+
+	if lista.primero == nil{
+		lista.primero = nuevoNodo
+	}
+
+	lista.largo ++
+}
+
+func (lista *listaEnlazada[T]) BorrarPrimero()T{
+	if lista.EstaVacia(){
+		panic("La lista esta vacía.")
+	}
+	elemento := lista.primero.dato
+	lista.primero = lista.primero.siguiente
+
+	if lista.primero == nil{
+		lista.ultimo = nil
+	}
+
+	lista.largo--
+	return elemento
+}
+
+func (lista *listaEnlazada[T]) VerPrimero()T{
+	if lista.EstaVacia(){
+		panic("La lista esta vacia")
+	}
+	return lista.primero.dato
+}
+
+
 func (lista *listaEnlazada[T]) VerUltimo() T {
 	if lista.EstaVacia() {
 		panic("La lista esta vacia")
