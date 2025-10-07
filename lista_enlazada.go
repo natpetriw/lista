@@ -31,29 +31,25 @@ func (lista *listaEnlazada[T]) EstaVacia() bool {
 	return lista.primero == nil
 }
 
-func (lista *listaEnlazada[T]) InsertarPrimero(dato T) {
-	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: lista.primero}
-	lista.primero = nuevoNodo
+func (lista *listaEnlazada[T]) InsertarPrimero(nodo T) {
+	nuevoNodo := crearNodo(nodo)
+	nuevoNodo.siguiente = lista.primero
 
-	if lista.ultimo == nil {
+	if lista.EstaVacia() {
 		lista.ultimo = nuevoNodo
 	}
-
+	lista.primero = nuevoNodo
 	lista.largo++
 }
 
-func (lista *listaEnlazada[T]) InsertarUltimo(dato T) {
-	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: nil}
-
-	if lista.ultimo != nil {
+func (lista *listaEnlazada[T]) InsertarUltimo(nodo T) {
+	nuevoNodo := crearNodo(nodo)
+	if lista.EstaVacia() {
+		lista.primero = nuevoNodo
+	} else {
 		lista.ultimo.siguiente = nuevoNodo
 	}
 	lista.ultimo = nuevoNodo
-
-	if lista.primero == nil {
-		lista.primero = nuevoNodo
-	}
-
 	lista.largo++
 }
 
