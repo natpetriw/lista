@@ -1,7 +1,6 @@
 package lista_test
 
 import (
-	"tdas/lista"
 	TDALista "tdas/lista"
 	"testing"
 
@@ -69,7 +68,7 @@ func TestIteradorInternoCortarRecorrido(t *testing.T) {
 	require.EqualValues(t, []int{ELEMENTO_1, ELEMENTO_2}, elementos, "El recorrido debería cortarse cuando visitar devuelve false")
 }
 func TestInsertarPrincipioVacio(t *testing.T) {
-	lista := lista.CrearListaEnlazada[int]()
+	lista := TDALista.CrearListaEnlazada[int]()
 	for i := 0; i < 50; i++ {
 		lista.InsertarUltimo(i)
 	}
@@ -80,7 +79,7 @@ func TestInsertarPrincipioVacio(t *testing.T) {
 	}
 }
 func TestInsertarFinalConIrerador(t *testing.T) {
-	lista := lista.CrearListaEnlazada[int]()
+	lista := TDALista.CrearListaEnlazada[int]()
 	for i := 0; i < 10; i++ {
 		lista.InsertarUltimo(i)
 	}
@@ -93,7 +92,7 @@ func TestInsertarFinalConIrerador(t *testing.T) {
 
 }
 func TestInsertarMedioIterador(t *testing.T) {
-	lista := lista.CrearListaEnlazada[int]()
+	lista := TDALista.CrearListaEnlazada[int]()
 	for i := 0; i < 5; i++ {
 		lista.InsertarUltimo(i)
 	}
@@ -114,7 +113,7 @@ func TestInsertarMedioIterador(t *testing.T) {
 	}
 }
 func TestIteradorBorrarPrimero(t *testing.T) {
-	lista := lista.CrearListaEnlazada[int]()
+	lista := TDALista.CrearListaEnlazada[int]()
 	lista.InsertarPrimero(2)
 	lista.InsertarPrimero(1)
 	iterador := lista.Iterador()
