@@ -16,6 +16,11 @@ type iteradorListaEnlazada[T any] struct {
 	lista    *listaEnlazada[T]
 }
 
+const(
+	LISTA_VACIA = "La lista esta vacia"
+	ITERADOR = "El iterador termino de iterar"
+)
+
 func CrearListaEnlazada[T any]() *listaEnlazada[T] {
 	return new(listaEnlazada[T])
 }
@@ -31,10 +36,9 @@ func (lista *listaEnlazada[T]) EstaVacia() bool {
 	return lista.primero == nil
 }
 
-func (lista *listaEnlazada[T]) InsertarPrimero(nodo T) {
-	nuevoNodo := crearNodo(nodo)
-	nuevoNodo.siguiente = lista.primero
-
+func (lista *listaEnlazada[T]) InsertarPrimero(dato T) {
+	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: lista.primero}
+	lista.primero = nuevoNodo
 	if lista.EstaVacia() {
 		lista.ultimo = nuevoNodo
 	}
@@ -42,20 +46,23 @@ func (lista *listaEnlazada[T]) InsertarPrimero(nodo T) {
 	lista.largo++
 }
 
-func (lista *listaEnlazada[T]) InsertarUltimo(nodo T) {
-	nuevoNodo := crearNodo(nodo)
-	if lista.EstaVacia() {
-		lista.primero = nuevoNodo
-	} else {
+func (lista *listaEnlazada[T]) InsertarUltimo(dato T) {
+	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: nil}
+
+	if lista.ultimo != nil {
 		lista.ultimo.siguiente = nuevoNodo
 	}
 	lista.ultimo = nuevoNodo
+
+	if lista.primero == nil {
+		lista.primero = nuevoNodo
+	}
 	lista.largo++
 }
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	if lista.EstaVacia() {
-		panic("La lista esta vacia")
+		panic(LISTA_VACIA)
 	}
 	elemento := lista.primero.dato
 	lista.primero = lista.primero.siguiente
@@ -70,14 +77,14 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 
 func (lista *listaEnlazada[T]) VerPrimero() T {
 	if lista.EstaVacia() {
-		panic("La lista esta vacia")
+		panic(LISTA_VACIA)
 	}
 	return lista.primero.dato
 }
 
 func (lista *listaEnlazada[T]) VerUltimo() T {
 	if lista.EstaVacia() {
-		panic("La lista esta vacia")
+		panic(LISTA_VACIA)
 	}
 	return lista.ultimo.dato
 }
@@ -87,17 +94,11 @@ func (lista *listaEnlazada[T]) Largo() int {
 }
 
 func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-	if lista.EstaVacia() {
-		return
-	}
-
-	actual := lista.primero
-
-	for actual != nil {
+	for actual := lista.primero; actual != nil; actual = actual.siguiente{
 		if !visitar(actual.dato) {
 			return
 		}
-		actual = actual.siguiente
+		
 	}
 }
 
@@ -115,14 +116,14 @@ func (iterador *iteradorListaEnlazada[T]) HaySiguiente() bool {
 
 func (iterador *iteradorListaEnlazada[T]) VerActual() T {
 	if !iterador.HaySiguiente() {
-		panic("El iterador termino de iterar")
+		panic(ITERADOR)
 	}
 	return iterador.actual.dato
 }
 
 func (iterador *iteradorListaEnlazada[T]) Siguiente() {
 	if !iterador.HaySiguiente() {
-		panic("El iterador termino de iterar")
+		panic(ITERADOR)
 	}
 
 	iterador.anterior = iterador.actual
@@ -148,7 +149,7 @@ func (iterador *iteradorListaEnlazada[T]) Insertar(dato T) {
 
 func (iterador *iteradorListaEnlazada[T]) Borrar() T {
 	if !iterador.HaySiguiente() {
-		panic("El iterador termino de iterar")
+		panic(ITERADOR)
 	}
 
 	dato := iterador.actual.dato

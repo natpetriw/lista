@@ -8,17 +8,15 @@ import (
 )
 
 const (
-	ELEMENTO_1 = 1
-	ELEMENTO_2 = 2
-	ELEMENTO_3 = 3
+	LISTA_VACIA = "La lista esta vacia"
 )
 
 func TestListaVacia(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	require.True(t, lista.EstaVacia())
-	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
-	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
-	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.PanicsWithValue(t, LISTA_VACIA, func() { lista.BorrarPrimero() })
+	require.PanicsWithValue(t, LISTA_VACIA, func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, LISTA_VACIA, func() { lista.VerUltimo() })
 	require.EqualValues(t, 0, lista.Largo())
 }
 func TestLista1Elemento(t *testing.T) {
@@ -40,9 +38,9 @@ func TestLista1Elemento(t *testing.T) {
 
 func TestIteradorInternoListaConElementos(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarUltimo(ELEMENTO_1)
-	lista.InsertarUltimo(ELEMENTO_2)
-	lista.InsertarUltimo(ELEMENTO_3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	elementos := []int{}
 	lista.Iterar(func(e int) bool {
@@ -50,22 +48,22 @@ func TestIteradorInternoListaConElementos(t *testing.T) {
 		return true
 	})
 
-	require.Equal(t, []int{ELEMENTO_1, ELEMENTO_2, ELEMENTO_3}, elementos, "Deberían recorrerse todos los elementos")
+	require.Equal(t, []int{1, 2, 3}, elementos, "Deberían recorrerse todos los elementos")
 }
 
 func TestIteradorInternoCortarRecorrido(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarUltimo(ELEMENTO_1)
-	lista.InsertarUltimo(ELEMENTO_2)
-	lista.InsertarUltimo(ELEMENTO_3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	elementos := []int{}
 	lista.Iterar(func(e int) bool {
 		elementos = append(elementos, e)
-		return e != ELEMENTO_2
+		return e != 2
 	})
 
-	require.EqualValues(t, []int{ELEMENTO_1, ELEMENTO_2}, elementos, "El recorrido debería cortarse cuando visitar devuelve false")
+	require.EqualValues(t, []int{1, 2}, elementos, "El recorrido debería cortarse cuando visitar devuelve false")
 }
 func TestInsertarPrincipioVacio(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
@@ -137,8 +135,8 @@ func TestIteradorInternoListaVacia(t *testing.T) {
 
 func TestIteradorInternoVisitarSiempreFalse(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarUltimo(ELEMENTO_1)
-	lista.InsertarUltimo(ELEMENTO_2)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
 
 	elementos := []int{}
 	lista.Iterar(func(e int) bool {
@@ -147,5 +145,60 @@ func TestIteradorInternoVisitarSiempreFalse(t *testing.T) {
 	})
 
 	require.Len(t, elementos, 1, "Debería recorrerse sólo un elemento si visitar devuelve false al principio")
-	require.EqualValues(t, ELEMENTO_1, elementos[0], "El primer elemento debería ser el único recorrido")
+	require.EqualValues(t, 1, elementos[0], "El primer elemento debería ser el único recorrido")
+}
+
+func TestInsertarIteradorListaVacia(t *testing.T){
+	lista := TDALista.CrearListaEnlazada[int]()
+	iterdor := lista.iterador()
+
+	iterador.Insertar(1)
+
+	require.EqualValues(t, 1, lista.VerPrimero(), "El primer elemento deberia ser el 1")
+	require.EqualValues(t, 1, lista.VerUltimo(), "El ultimo elemento deberia ser el 1")
+	require.EqualValues(t, 1, iterdaor.VerActual(), "El iterador deberia apuntar al nuevo elemento")
+}
+
+func TestVolumenLista(t *testing.T){
+	lista :=TDALista.CrearListaEnlazada[int]()
+	N := 1000
+
+	for i:= 0, i < N; i++{
+		lista.InsertarUltimo(i)
+	}
+
+	require.EqualValues(t, 0, lista.VerPrimero(), "El primer elemento deberia ser el 0")
+	require.EqualValues(t, N-1, lista.VerUltimo())
+
+	for i:= 0; i < N; i++{
+		require.True(t, i, lista.BorrarPrimero(), "El eemnto borrado no coincide con el esperaod")
+	}
+
+	require.True(t, lista.EstaVacia(), "La lista debria estar vacia")
+}
+
+func TestVolumenIteradorExterno(t *testing.T){
+	lista := TDALista.CrearListaEnlazada[int]()
+	N := 1000
+
+	for i:= 0; i < N; i++{
+		litsa.InsertarUltimo(i)
+	}
+
+	iter := lista.Iterador()
+	contador := 0
+	for iter.HaySiguiente(){
+		valor := iterador.Siguiente()
+		require.EqualValues(t, contador, valor, "El elemento es incorrecto")
+		contador++
+	}
+	require.EqualValues(t, N, contador, "El iterador no recorrio tdos los elemtos")
+}
+
+func TestIteradorExternoListaVacia(t *testing){
+	lista := TDALista.CrearListaEnlazada[int]()
+	iterador := lista.Iterador()
+
+	require.False(t, iterador.HaySiguiente(), "No deberia tener siguiente ya que a lista esta vacia.")
+	require.EqualValues(t, 0, iterador.VerActual(),"Deberia mostar 0 ya que la lista esta vacia")
 }
