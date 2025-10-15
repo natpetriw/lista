@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	LISTA_VACIA = "La lista esta vacia"
+	LISTA_VACIA = "La lista está vacía"
 )
 
 func TestListaVacia(t *testing.T) {
@@ -150,20 +150,20 @@ func TestIteradorInternoVisitarSiempreFalse(t *testing.T) {
 
 func TestInsertarIteradorListaVacia(t *testing.T){
 	lista := TDALista.CrearListaEnlazada[int]()
-	iterdor := lista.iterador()
+	iterador := lista.Iterador()
 
 	iterador.Insertar(1)
 
 	require.EqualValues(t, 1, lista.VerPrimero(), "El primer elemento deberia ser el 1")
 	require.EqualValues(t, 1, lista.VerUltimo(), "El ultimo elemento deberia ser el 1")
-	require.EqualValues(t, 1, iterdaor.VerActual(), "El iterador deberia apuntar al nuevo elemento")
+	require.EqualValues(t, 1, iterador.VerActual(), "El iterador deberia apuntar al nuevo elemento")
 }
 
 func TestVolumenLista(t *testing.T){
 	lista :=TDALista.CrearListaEnlazada[int]()
 	N := 1000
 
-	for i:= 0, i < N; i++{
+	for i:= 0; i < N; i++ {
 		lista.InsertarUltimo(i)
 	}
 
@@ -171,10 +171,11 @@ func TestVolumenLista(t *testing.T){
 	require.EqualValues(t, N-1, lista.VerUltimo())
 
 	for i:= 0; i < N; i++{
-		require.True(t, i, lista.BorrarPrimero(), "El eemnto borrado no coincide con el esperaod")
+		valor := lista.BorrarPrimero()
+		require.EqualValues(t, i, valor, "El elemento borrado no coincide con el esperado")
 	}
 
-	require.True(t, lista.EstaVacia(), "La lista debria estar vacia")
+	require.True(t, lista.EstaVacia(), "La lista debería estar vacía")
 }
 
 func TestVolumenIteradorExterno(t *testing.T){
@@ -182,23 +183,27 @@ func TestVolumenIteradorExterno(t *testing.T){
 	N := 1000
 
 	for i:= 0; i < N; i++{
-		litsa.InsertarUltimo(i)
+		lista.InsertarUltimo(i)
 	}
 
 	iter := lista.Iterador()
 	contador := 0
 	for iter.HaySiguiente(){
-		valor := iterador.Siguiente()
+		valor := iter.VerActual()
 		require.EqualValues(t, contador, valor, "El elemento es incorrecto")
+		iter.Siguiente()
 		contador++
 	}
-	require.EqualValues(t, N, contador, "El iterador no recorrio tdos los elemtos")
+	require.EqualValues(t, N, contador, "El iterador no recorrio todos los elementos")
 }
 
-func TestIteradorExternoListaVacia(t *testing){
+func TestIteradorExternoListaVacia(t *testing.T){
 	lista := TDALista.CrearListaEnlazada[int]()
 	iterador := lista.Iterador()
 
-	require.False(t, iterador.HaySiguiente(), "No deberia tener siguiente ya que a lista esta vacia.")
-	require.EqualValues(t, 0, iterador.VerActual(),"Deberia mostar 0 ya que la lista esta vacia")
+	require.False(t, iterador.HaySiguiente(), "No debería tener siguiente ya que a lista esta vacía.")
+
+	require.PanicsWithValue(t, "El iterador termino de iterar", func(){
+		iterador.VerActual()
+	})
 }

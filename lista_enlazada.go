@@ -17,7 +17,7 @@ type iteradorListaEnlazada[T any] struct {
 }
 
 const(
-	LISTA_VACIA = "La lista esta vacia"
+	LISTA_VACIA = "La lista está vacía"
 	ITERADOR = "El iterador termino de iterar"
 )
 
@@ -38,8 +38,8 @@ func (lista *listaEnlazada[T]) EstaVacia() bool {
 
 func (lista *listaEnlazada[T]) InsertarPrimero(dato T) {
 	nuevoNodo := &nodoLista[T]{dato: dato, siguiente: lista.primero}
-	lista.primero = nuevoNodo
-	if lista.EstaVacia() {
+	
+	if lista.primero == nil {
 		lista.ultimo = nuevoNodo
 	}
 	lista.primero = nuevoNodo
